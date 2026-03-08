@@ -1,11 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Site</title>
+    <meta charset="UTF-8">
+    <title>MEGAHARD.LIVE - Windows 95 Live</title>
+    <script src="https://copy.sh/v86/libv86.js"></script>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; background: #008080; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        #screen_container { border: 3px outset #eee; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); background: #000; cursor: none; }
+        canvas { display: block; }
+        .loading { color: white; font-family: "MS Sans Serif", Arial; font-size: 14px; position: absolute; }
+    </style>
 </head>
 <body>
-  <h1>Hello</h1>
+
+    <div id="loading_msg" class="loading">Starting Windows 95... Please wait.</div>
+    
+    <div id="screen_container">
+        <canvas id="vga_canvas"></canvas>
+        <div style="position: absolute; top: 0; z-index: 10;"></div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            var emulator = new V86Starter({
+                wasm_path: "https://copy.sh/v86/v86.wasm",
+                memory_size: 64 * 1024 * 1024,
+                vga_memory_size: 8 * 1024 * 1024,
+                screen_container: document.getElementById("screen_container"),
+                canvas: document.getElementById("vga_canvas"),
+                bios: { url: "https://copy.sh/v86/bios/seabios.bin" },
+                vga_bios: { url: "https://copy.sh/v86/bios/vgabios.bin" },
+                hda: { url: "https://copy.sh/v86/images/windows95.img" }, // Official v86 Win95 Demo Image
+                autostart: true,
+            });
+
+            emulator.add_listener("emulator-ready", function() {
+                document.getElementById("loading_msg").style.display = "none";
+            });
+        };
+    </script>
 </body>
 </html>
